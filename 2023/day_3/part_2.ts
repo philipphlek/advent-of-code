@@ -1,3 +1,5 @@
+// https://adventofcode.com/2023/day/3
+
 import * as fs from 'fs'
 
 const isGearCell = (cell: string) => cell === '*'

@@ -1,3 +1,5 @@
+// https://adventofcode.com/2023/day/1
+
 import * as fs from 'fs'
 import * as readline from 'readline'
 

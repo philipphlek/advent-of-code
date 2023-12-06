@@ -1,3 +1,5 @@
+// https://adventofcode.com/2021/day/1
+
 import * as fs from 'fs'
 
 const getMeasurementSum = (measurements: number[]): number => {

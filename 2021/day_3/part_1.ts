@@ -1,3 +1,5 @@
+// https://adventofcode.com/2021/day/3
+
 import * as fs from 'fs'
 
 const incrementBitNumCount = (bitNumCountTracker: [number, number][], index: number, bitNum: number) => {

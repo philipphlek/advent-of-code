@@ -1,3 +1,5 @@
+// // https://adventofcode.com/2022/day/1
+
 import * as fs from 'fs'
 
 const updateTopThreeElfCalories = (currElfCalories: number, topThreeElfCalories: [number, number, number]) => {

@@ -1,3 +1,5 @@
+// https://adventofcode.com/2023/day/6
+
 import * as fs from 'fs'
 
 const part1 = (file: string) => {

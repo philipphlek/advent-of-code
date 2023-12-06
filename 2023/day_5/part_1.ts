@@ -1,3 +1,5 @@
+// https://adventofcode.com/2023/day/5
+
 import * as fs from 'fs'
 
 /*
