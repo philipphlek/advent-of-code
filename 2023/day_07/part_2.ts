@@ -51,6 +51,14 @@ const getPairCount = (counts: number[]): number => {
   return pairCount
 }
 
+/*
+  Post Discussion Notes:
+  - could clean up a bunch of these hand type check functions
+  - could utilize Object.keys(cardCounts).length to know unique cards seen
+  - jacks + counts = target
+  - could move getCardCounts into getStrongestHandType to avoid hooping multiple times but having these check separation work on their own isn't bad
+  - could make getCardCounts return jack count separately since that's an important value
+*/
 const hasFiveOfAKind = (hand: CardHand): boolean => {
   const cardCounts = getCardCounts(hand)
   const counts = Object.values(cardCounts)
@@ -98,7 +106,6 @@ const hasTwoPair = (hand: CardHand): boolean => {
   const jacks = cardCounts['J']
   const hasTwoPair = getPairCount(counts) === 2 || (getPairCount(counts) === 1 && jacks === 1)
   return hasTwoPair
-
 }
 const hasOnePair = (hand: CardHand): boolean => {
   const cardCounts = getCardCounts(hand)
