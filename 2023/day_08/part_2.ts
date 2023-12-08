@@ -25,7 +25,7 @@ const getStepsToZPerVal = (startVals: string[], traversalLookup: Record<string, 
   let i = 0
   /*
     Post Discussion Note:
-    Could've done it brute force similar to part 1 and looped until all values ended with Z but takes too long
+    - Could've done it brute force similar to part 1 and looped until all values ended with Z but takes too long
   */
   while (!stepTracker.every(num => num !== 0)) {
     if (i === instructions.length) {
@@ -47,12 +47,7 @@ const getStepsToZPerVal = (startVals: string[], traversalLookup: Record<string, 
   return stepTracker  
 }
 
-/* 
-  Post Discussion Note:
-  - LCM problem
-  - Find the # of steps needed per combination then finding the least common multiple which is the
-  lowest possible number that can be divisible by both numbers
-*/
+// Find the least common multiple which is the lowest possible number that can be divisible by all numbers
 const lcm = (nums: number[]) => {
   const greatestCommonDivisor = (x: number, y: number): number => (!y ? x : greatestCommonDivisor(y, x % y))
   const leastCommonMultiplier = (x: number, y: number): number => (x * y) / greatestCommonDivisor(x, y)
@@ -66,6 +61,11 @@ const part2 = (file: string) => {
   const traversalLookup = setupTraversalLookup(lines)
   const startValues = Object.keys(traversalLookup).filter(val => val.endsWith('A'))
   const stepTracker = getStepsToZPerVal(startValues, traversalLookup, instructions)
+  /*
+    Post Discussion Note:
+    - LCM problem because the step numbers will just recycle for each until they all line up
+    - Find the # of steps needed per combination then find the least common multiple which is thelowest possible number that can be divisible by all numbers
+  */
   return lcm(stepTracker)
 }
 
