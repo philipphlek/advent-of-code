@@ -240,11 +240,47 @@ const getInnerTileCount = (mainLoopInfo: MainLoopInfo): number => {
   return innerCoordsList.length
 }
 
+/*
+  Post Discussion Note:
+  - Code is really messy trying to get my thought process out and working
+  - After finding the main loop, I would start at the lowest part of the loop so I know the inner part starts point North.
+  - I will continue to traverse the loop and keeping track of inner using the direction cycle of N, E, S, W.
+  - When there's a change in direction bend such as F->J, that will make the inner start pointing in the direction cycle reverse.
+  - Keep track of these directions properly will let you mark the inners touching the pipe
+  - I would then go back finding all the inner cells and fill out the remaining untouched cells
+*/
 const solve = (file: string) => {
   const tiles = fs.readFileSync(file, 'utf-8').split(/[\n\r]+/).map(line => line.split(''))
 
-  const startCoord: Coordinate = getStartCoord(tiles) 
+  const startCoord: Coordinate = getStartCoord(tiles)
   const mainLoopInfo = findMainLoop(startCoord, tiles)
+  /*
+    Post Discussion Note:
+    After finding the main loop shape, you can use Point in Polygon to determine whether a cell lies inside or outside based on intersections on the edges.
+    This would remove all the code for:
+      updateTilesInsideMainLoop(mainLoopInfo)
+      const innerTileCount = getInnerTileCount(mainLoopInfo)
+
+    Ex.
+    const getTileCounInsideMainLoop = (mainLoopInfo: MainLoopInfo): number => {
+      const {updatedTiles} = mainLoopInfo
+      let isCoordInside = false
+      let count = 0
+      for (let i = 0; i < updatedTiles.length; i++) {
+        for (let j = 0; j < updatedTiles[i].length; j++) {
+          if (['|', 'L', 'J'].includes(updatedTiles[i][j])) {
+            isCoordInside = !isCoordInside
+            continue
+          } else if (isCoordInside) {
+            if (updatedTiles[i][j] === 'x') {
+              count++
+            }
+          }
+        }
+      }
+      return count
+    }
+  */
   updateTilesInsideMainLoop(mainLoopInfo)
   const innerTileCount = getInnerTileCount(mainLoopInfo)
   printTiles(mainLoopInfo)
