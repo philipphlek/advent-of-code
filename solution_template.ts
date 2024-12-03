@@ -5,7 +5,9 @@ import * as fs from 'fs'
 function solve(file: string) {
   const lines = fs.readFileSync(file, 'utf-8').split(/[\n\r]+/)
 
-  for (let i = 0; i < lines.length; i++) {}
+  for (const line of lines) {
+    
+  }
 }
 
 console.log(solve('input.txt'))
