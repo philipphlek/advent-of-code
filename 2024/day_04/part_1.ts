@@ -34,6 +34,13 @@ function isChecksValid({
   return true
 }
 
+/*
+  Post Discussion Note:
+  - Could avoid all the if statements and just checking the bounds on the newRow and newCol in isChecksValid function but
+    ends up checking down directions you know would never be valid
+  - Could have isChecksValid return 0 or 1 so you can add it to count directly instead of more if statements
+  - Could do recursion instead of iteratively
+*/
 function getWordCount(word: string, grid: string[][]): number {
   if (grid.length < word.length && grid[0].length < word.length) {
     return 0
