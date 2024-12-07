@@ -94,6 +94,10 @@ function solve(file: string) {
     }
   }
 
+  /**
+    Post Discussion Notes:
+    - instead of brute force checking every possibility, you only need to check the path of the guards original path
+  */
   let totalNewObstacleLoop = 0
   for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < grid[row].length; col++) {
