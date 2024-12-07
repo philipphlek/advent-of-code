@@ -30,21 +30,27 @@ function printGrid(grid: string[][]) {
   console.log(result)
 }
 
-function getTotalDistinctPosForLoopObstruction(
-  grid: string[][],
-  guardStartCoord: number[]
-): number {
+function isGridLoop(grid: string[][], guardStartCoord: number[]): boolean {
   const totalDistinctPosVisited = new Set<string>()
-  const totalDistinctObstacles = new Set<string>()
   let currGuardPosIndex = 0
   let row = guardStartCoord[0]
   let col = guardStartCoord[1]
   while (isCoordInBounds(grid, row, col)) {
-    // console.log({row, col, pos: GUARD_POSITION_LOOKUP[currGuardPosIndex]})
+    if (
+      totalDistinctPosVisited.has(
+        JSON.stringify({
+          pos: GUARD_POSITION_LOOKUP[currGuardPosIndex],
+          coord: [row, col],
+        })
+      )
+    ) {
+      return true
+    }
+
     totalDistinctPosVisited.add(
       JSON.stringify({
-        currGuardPosIndex,
-        currGuardCoord: [row, col],
+        pos: GUARD_POSITION_LOOKUP[currGuardPosIndex],
+        coord: [row, col],
       })
     )
 
@@ -52,95 +58,24 @@ function getTotalDistinctPosForLoopObstruction(
 
     // guard reached outside map
     if (!isCoordInBounds(grid, row + rowChange, col + colChange)) {
-      printGrid(grid)
-
-      return totalDistinctObstacles.size
+      return false
     }
 
+    let newRowChange = rowChange
+    let newColChange = colChange
     // if guard hits an obstacle, change directions
-    if (grid[row + rowChange][col + colChange] === '#') {
+    while (grid[row + newRowChange][col + newColChange] === '#') {
       currGuardPosIndex = (currGuardPosIndex + 1) % GUARD_POSITION_LOOKUP.length
-      const [newRowChange, newColChange] =
-        getGuardMoveDirection(currGuardPosIndex)
-      rowChange = newRowChange
-      colChange = newColChange
-    } else {
-      // try treating new potential coord as # and change directions,
-      // if you have visited there before with the same position, it should be a loop
-      let potentialNewGuardPosIndex =
-        (currGuardPosIndex + 1) % GUARD_POSITION_LOOKUP.length
-      let [newRowChange, newColChange] = getGuardMoveDirection(
-        potentialNewGuardPosIndex
-      )
-      let potentialNewRow = row + newRowChange
-      let potentialNewCol = col + newColChange
-      const potentialTotalDistinctPosVisited = new Set<string>()
-      let potentialObstacleRow = row + rowChange
-      let potentialObstacleCol = col + colChange
-      while (isCoordInBounds(grid, potentialNewRow, potentialNewCol)) {
-        if (
-          totalDistinctObstacles.has(
-            JSON.stringify({
-              potentialObstacleRow,
-              potentialObstacleCol,
-            })
-          )
-        ) {
-          break
-        }
-        if (
-          totalDistinctPosVisited.has(
-            JSON.stringify({
-              currGuardPosIndex: potentialNewGuardPosIndex,
-              currGuardCoord: [potentialNewRow, potentialNewCol],
-            })
-          ) ||
-          potentialTotalDistinctPosVisited.has(
-            JSON.stringify({
-              currGuardPosIndex: potentialNewGuardPosIndex,
-              currGuardCoord: [potentialNewRow, potentialNewCol],
-            })
-          )
-        ) {
-          totalDistinctObstacles.add(
-            JSON.stringify({
-              potentialObstacleRow,
-              potentialObstacleCol,
-            })
-          )
-          grid[potentialObstacleRow][potentialObstacleCol] = '0'
-          break
-        }
-
-        if (grid[potentialNewRow][potentialNewCol] === '#') {
-          potentialNewRow -= newRowChange
-          potentialNewCol -= newColChange
-          potentialNewGuardPosIndex =
-            (potentialNewGuardPosIndex + 1) % GUARD_POSITION_LOOKUP.length
-          const newDirection = getGuardMoveDirection(potentialNewGuardPosIndex)
-          newRowChange = newDirection[0]
-          newColChange = newDirection[1]
-        } else {
-          potentialTotalDistinctPosVisited.add(
-            JSON.stringify({
-              currGuardPosIndex: potentialNewGuardPosIndex,
-              currGuardCoord: [potentialNewRow, potentialNewCol],
-            })
-          )
-        }
-
-        potentialNewRow += newRowChange
-        potentialNewCol += newColChange
-      }
+      const newMoveDirection = getGuardMoveDirection(currGuardPosIndex)
+      newRowChange = newMoveDirection[0]
+      newColChange = newMoveDirection[1]
     }
 
-    row += rowChange
-    col += colChange
+    row += newRowChange
+    col += newColChange
   }
 
-  printGrid(grid)
-
-  return totalDistinctObstacles.size
+  return false
 }
 
 function solve(file: string) {
@@ -158,7 +93,22 @@ function solve(file: string) {
       guardStartCoord = [row, potentialGuardStartCol]
     }
   }
-  return getTotalDistinctPosForLoopObstruction(grid, guardStartCoord)
+
+  let totalNewObstacleLoop = 0
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      if (['^', '#'].includes(grid[row][col])) {
+        continue
+      }
+      grid[row][col] = '#'
+      if (isGridLoop(grid, guardStartCoord)) {
+        totalNewObstacleLoop++
+      }
+      grid[row][col] = '.'
+    }
+  }
+
+  return totalNewObstacleLoop
 }
 
 console.log(solve('input.txt'))
