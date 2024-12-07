@@ -2,6 +2,12 @@
 
 import * as fs from 'fs'
 
+/*
+  Post Discussions Notes:
+  - could just pass the whole equation (testVal, nums) as 1 parameter and had an index tracker
+  - return boolean
+  - base case, check if runningTotal === testVal or check if any paths leads to true
+*/
 function calculatePotentialVals(
   runningTotal: number,
   nums: number[],
