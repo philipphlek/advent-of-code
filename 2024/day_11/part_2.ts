@@ -2,6 +2,20 @@
 
 import * as fs from 'fs'
 
+function addStoneToTracker(
+  stoneTracker: Record<number, number>,
+  stone: number,
+  count: number
+) {
+  if (isNaN(stone)) return
+
+  if (!stoneTracker[stone]) {
+    stoneTracker[stone] = count
+  } else {
+    stoneTracker[stone] += count
+  }
+}
+
 function transformStonesHelper(stone: number): number[] {
   if (stone === 0) return [1]
 
@@ -16,11 +30,6 @@ function transformStonesHelper(stone: number): number[] {
   return [stone * 2024]
 }
 
-type StoneTrack = {
-  stone: number
-  count: number
-}
-
 function transformStones(
   stoneTracker: Record<number, number>,
   blinks: number
@@ -33,19 +42,8 @@ function transformStones(
 
     Object.entries(currStoneTracker).forEach(([stone, count]) => {
       const [stone1, stone2] = transformStonesHelper(+stone)
-      if (!latestStoneTracker[stone1]) {
-        latestStoneTracker[stone1] = count
-      } else {
-        latestStoneTracker[stone1] += count
-      }
-
-      if (!isNaN(stone2)) {
-        if (!latestStoneTracker[stone2]) {
-          latestStoneTracker[stone2] = count
-        } else {
-          latestStoneTracker[stone2] += count
-        }
-      }
+      addStoneToTracker(latestStoneTracker, stone1, count)
+      addStoneToTracker(latestStoneTracker, stone2, count)
     })
   }
 
